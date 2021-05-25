@@ -28,7 +28,9 @@ OpenTK also includes a convenient math library for common graphics types like ve
 
 ### What operating systems are supported by OpenTK?
 
-OpenTK runs on Windows, Linux, MacOS X, Android, and iOS.
+OpenTK runs on Windows, Linux, and MacOS X.
+
+(Older versions of OpenTK supported Android and iOS as well; current OpenTK *might* work, but it’s untested.)
 
 ### What hardware is supported?
 
