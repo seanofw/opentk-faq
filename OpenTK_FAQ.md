@@ -2,6 +2,8 @@
 
 
 
+[TOC]
+
 ## Basics & Requirements
 
 
@@ -24,13 +26,13 @@ OpenTK also includes a convenient math library for common graphics types like ve
 
 #### What is OpenAL?
 
-[OpenAL]() is a cross-platform 3D audio library, originally developed by [Loki Software](https://en.wikipedia.org/wiki/Loki_Software), and released as an [open specification](https://openal.org/) by [Creative Labs](https://us.creative.com/), with multiple implementations in both hardware and software.  OpenAL is used in lots of games to provide both sound effects and music and is the successor to EAX and A3D.
+[OpenAL](https://openal.org/) is a cross-platform 3D audio library, originally developed by [Loki Software](https://en.wikipedia.org/wiki/Loki_Software), and released as an open specification by [Creative Labs](https://us.creative.com/), with multiple implementations in both hardware and software.  OpenAL is used in lots of games to provide both sound effects and music and is the successor to EAX and A3D.
 
 ### What operating systems are supported by OpenTK?
 
 OpenTK runs on Windows, Linux, and MacOS X.
 
-(Older versions of OpenTK supported Android and iOS as well; current OpenTK *might* work, but it’s untested.)
+(Older versions of OpenTK supported Android and iOS as well; current OpenTK *might* work on these, but it’s untested.)
 
 ### What hardware is supported?
 
@@ -602,7 +604,7 @@ public class MyWindow : GameWindow
 }
 ```
 
-(Note that OpenTK 3 used a very different technique for setting up its initial window state:  Window parameters are passed as part of the `GameWindow` or `NativeWindow` constructor; there is no such thing as `NativeWindowSettings`; and configuration options are fairly limited.)
+(Note that OpenTK 3 used a very different technique for setting up its initial window state:  Window parameters are passed as part of the `GameWindow` or `NativeWindow` constructor; there is no such thing as `NativeWindowSettings`; and configuration options are fairly limited.)
 
 ### What’s up with OpenTK’s matrices?
 
