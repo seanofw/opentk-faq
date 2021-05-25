@@ -78,7 +78,7 @@ But if you need to integrate OpenTK with an existing UI, it includes some packag
 
 ### How fast is OpenTK?
 
-For a .NET library, OpenTK is *very* fast.  OpenTK 3 and 4 use hand-optimized IL assembly to minimize overhead when calling OpenGL functions, and OpenTK 5 will use the new C# function pointers to reduce overhead even further.
+For a .NET library, OpenTK is *very* fast.  OpenTK 3 and 4 use hand-optimized IL assembly to minimize overhead when calling OpenGL functions, and OpenTK 5 is planned to use the new C# function pointers to reduce overhead even further.
 
 We take great pains to make it as efficient as possible.  However, keep in mind that the underlying runtimes (.NET/Mono) use both JIT compilation and garbage collection, which can complicate the definition of “fast.”  Still, we place significant emphasis on performance, so if you believe something could run faster, please [open an issue on our GitHub](https://github.com/opentk/opentk/issues)!
 
@@ -86,7 +86,7 @@ We take great pains to make it as efficient as possible.  However, keep in mind 
 
 #### Vulkan or Metal?
 
-OpenTK does not currently support [Vulkan](https://www.vulkan.org/) or [Metal](https://developer.apple.com/metal/).  OpenTK 5 won’t either, but the changes for OpenTK 5 may make it easier to support Vulkan in the future.  Feel free to submit a pull request and [help out](#How-can-I-help)!
+OpenTK does not currently support [Vulkan](https://www.vulkan.org/) or [Metal](https://developer.apple.com/metal/).  OpenTK 5 may not either, but the changes for OpenTK 5 may make it easier to support Vulkan in the future.  Feel free to submit a pull request and [help out](#How-can-I-help)!
 
 #### DirectX or Direct3D?
 
@@ -316,24 +316,23 @@ OpenTK exposes this single function with a dozen different overloads on the `GL`
 3. void BufferData<T>(BufferTarget target, int size, T[,,] data, BufferUsageHint usage)
 4. void BufferData<T>(BufferTarget target, int size, ref T data, BufferUsageHint usage)
 5. void BufferData   (BufferTarget target, int size, IntPtr data, BufferUsageHint usage)
-6. void BufferData<T>(BufferTarget target, int size, ReadOnlySpan<T> data,
-                      BufferUsageHint usage)
 
-7. void BufferData<T>(BufferTarget target, IntPtr sz, T[] data, BufferUsageHint usage)
-8. void BufferData<T>(BufferTarget target, IntPtr sz, T[,] data, BufferUsageHint usage)
-9. void BufferData<T>(BufferTarget target, IntPtr sz, T[,,] data, BufferUsageHint usage)
-10. void BufferData<T>(BufferTarget target, IntPtr sz, ref T data, BufferUsageHint usage)
-11. void BufferData  (BufferTarget target, IntPtr sz, IntPtr data, BufferUsageHint usage)
-12. void BufferData<T>(BufferTarget target, IntPtr sz, ReadOnlySpan<T> data,
-                       BufferUsageHint usage)
+6. void BufferData<T>(BufferTarget target, IntPtr sz, T[] data, BufferUsageHint usage)
+7. void BufferData<T>(BufferTarget target, IntPtr sz, T[,] data, BufferUsageHint usage)
+8. void BufferData<T>(BufferTarget target, IntPtr sz, T[,,] data, BufferUsageHint usage)
+9. void BufferData<T>(BufferTarget target, IntPtr sz, ref T data, BufferUsageHint usage)
+10. void BufferData  (BufferTarget target, IntPtr sz, IntPtr data, BufferUsageHint usage)
 ```
 
-Overloads #7-12 differ from #1-6 only by using `IntPtr` instead of `int` to represent the size of the data, so let’s look at what techniques overloads #1-6 support:
+(Each of the generic forms has a `where T: struct` constraint, but it’s been omitted for brevity.)
+
+Overloads #1-5 differ from #6-10 only by using `IntPtr` instead of `int` to represent the size of the data, so let’s look at what techniques overloads #1-5 support:
 
 - You can pass managed arrays of `struct` objects via the `T[]`, `T[,]` and `T[,,]` forms:  Forms #1-3 support one-dimensional, two-dimensional, and three-dimensional arrays of managed `struct`s, respectively.
 - You can pass a `ref` to a single `struct` using form #4.
 - You can pass a raw pointer from an `unsafe`/`fixed` block of memory via the `IntPtr` form (#5).
-- You can pass a `ReadOnlySpan<T>` using form #6 (in OpenTK 5+; this is not supported by OpenTK 4 or earlier).
+
+(And in OpenTK 5, we plan to support `ReadOnlySpan<T>` as well, adding yet another way to do it!)
 
 **Passing managed arrays** (forms #1-3)
 
@@ -415,26 +414,6 @@ unsafe
                       BufferUsageHint.StaticDraw);        
     }
 }
-```
-
-**Passing `ReadOnlySpan<T>`** (form #5; this requires OpenTK 5+)
-
-This lets you pass an array-like section of data containing any `struct` type:  `ReadOnlySpan<T>` is a bit like a “managed pointer.”  Consider a situation like the previous example, where you’d like to temporarily allocate an array of `float` values on the stack for efficiency, and then pass that array to OpenGL.  OpenTK 5+ supports this directly:
-
-*Example code in C:*
-
-```C
-float data[1024];
-...
-glBufferData(GL_TEXTURE_BUFFER, bufferSize, data, GL_STATIC_DRAW);
-```
-
-*C# equivalent:*
-
-```c#
-ReadOnlySpan<float> data = stackalloc float[1024];
-...
-GL.BufferData(BufferTarget.TextureBuffer, bufferSize, data, BufferUsageHint.StaticDraw);
 ```
 
 ### How do I control OpenGL contexts?
