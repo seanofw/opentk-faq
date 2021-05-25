@@ -257,6 +257,41 @@ Arguably, throwing exceptions is a better way to handle errors than aborting.
 
 `Gl.GetError()` in OpenTK reads errors from a queue, just like `glGetError()` does — it’s just a passthrough to the same underlying error state.
 
+#### That seems like a lot of if-statements; is there a better way?
+
+OpenGL 4.3+ offers a new technique, called a _debug message callback_.  The general idea behind it is to “register” a _debug callback_ function with OpenGL; any time OpenGL encounters an error, it will call your function immediately, and pass useful things to it like an error message.  First, you’ll need to declare an error-handling method that OpenGL can call, something like this:
+
+```c#
+private static void DebugCallback(DebugSource source, DebugType type, int id,
+    DebugSeverity severity, int length, IntPtr message, IntPtr userParam)
+{
+    string messageString = Marshal.PtrToStringAnsi(message, length);
+    Console.WriteLine($"{severity} {type} | {messageString}");
+
+    if (type == DebugType.DebugTypeError)
+        throw new Exception(messageString);
+}
+```
+
+Next, you’ll need to create a delegate from it as a handle that the GC can’t collect, and then register the resulting function with OpenGL:
+
+```c#
+private static DebugProc _debugProcCallback = DebugCallback;
+private static GCHandle _debugProcCallbackHandle;
+
+...
+    
+_debugProcCallbackHandle = GCHandle.Alloc(_debugProcCallback);
+
+GL.DebugMessageCallback(_debugProcCallback, IntPtr.Zero);
+GL.Enable(EnableCap.DebugOutput);
+GL.Enable(EnableCap.DebugOutputSynchronous);
+```
+
+Vassalware, a member of the OpenTK Team, has a [more extensive discussion of this technique](https://gist.github.com/Vassalware/d47ff5e60580caf2cbbf0f31aa20af5d).
+
+Note that to use this technique, you may need to change your `NativeWindowSettings` to update the API version of OpenGL to 4.3 or higher.
+
 ### How do I pass pointers and arrays?
 
 OpenTK includes several method overloads for every OpenGL/CL/AL function that requires a pointer:  These overloads are designed to make working with the functions as natural as possible in .NET while still providing high performance.
