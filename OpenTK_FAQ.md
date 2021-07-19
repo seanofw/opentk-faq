@@ -50,6 +50,10 @@ If you’re able to use **.NET Core or .NET 5+**, you should use .NET Core or .N
 
 If you’re stuck on the older .NET Framework 4.x, you will need to use OpenTK 3.x with it.  OpenTK 4.x+ is *not* compatible with .NET Framework, and there are no plans to support newer releases of OpenTK on .NET Framework.
 
+### What’s the status of OpenTK 5.0?
+
+OpenTK 5.0 is currently in development, and is not yet ready for release.  We have a [TODO list](https://github.com/opentk/opentk/issues/1207) tracks its current status.  We’d welcome any help, if you’d like to contribute!
+
 ### Which release is the official release?
 
 - https://github.com/opentk/opentk/ is the official source-code repository for OpenTK.  There are also several related projects managed by [the OpenTK team](https://github.com/opentk/), including the [GLControl](https://github.com/opentk/GLControl) and [GLWpfControl](https://github.com/opentk/GLWpfControl) and [ObjectTK](https://github.com/opentk/ObjectTK).
@@ -332,7 +336,7 @@ Overloads #1-5 differ from #6-10 only by using `IntPtr` instead of `int` to repr
 - You can pass a `ref` to a single `struct` using form #4.
 - You can pass a raw pointer from an `unsafe`/`fixed` block of memory via the `IntPtr` form (#5).
 
-(And in OpenTK 5, we plan to support `ReadOnlySpan<T>` as well, adding yet another way to do it!)
+(And in OpenTK 5, we plan to support `ReadOnlySpan<T>` as well, adding yet another way to do it!)
 
 **Passing managed arrays** (forms #1-3)
 
